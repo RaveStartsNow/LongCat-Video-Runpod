@@ -20,7 +20,11 @@
 # stock found anywhere, so most of the availability this was reaching for survives the pinning.
 #
 # Licences: LongCat-Video is MIT. ComfyUI is GPL-3.0 and is used here as an unmodified upstream program.
-FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
+# torch 2.8 statt 2.6: das (ungepinnte) aktuelle ComfyUI zieht comfy-kitchen, dessen
+# torch.library.custom_op-Signaturen (`stride: list[int]`) torch 2.6 beim Import
+# ablehnt -- ComfyUI startete im Worker gar nicht ("infer_schema ... unsupported type
+# list[int]"). cu128 läuft auf Ada (4090/L40S) und zusätzlich auf Blackwell.
+FROM pytorch/pytorch:2.8.0-cuda12.8-cudnn9-runtime
 
 ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
